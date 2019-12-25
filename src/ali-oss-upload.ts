@@ -38,33 +38,36 @@ export async function upload(): Promise<void> {
 
     const files = glob.sync(pattern, { cwd: fromDir });
     for (const file of files) {
+      const objectName = slash(path.join(toDir, file));
       let shouldUpload = true;
       if (!overwrite) {
         try {
-          const result = await client.get(file);
+          const result = await client.get(objectName);
           if (result.res.status !== 200) {
             shouldUpload = false;
           }
         } catch (error) {
-          //
+          core.info(`NoSuchKey: ${objectName}`);
         }
       }
       if (shouldUpload) {
         try {
           //object-name可以自定义为文件名（例如file.txt）或目录（例如abc/test/file.txt）的形式，实现将文件上传至当前Bucket或Bucket下的指定目录。
-          const objectName = slash(path.join(toDir, file));
           const filePath = path.join(fromDir, file);
-          core.debug(`Upload: ${objectName} to ${filePath}`);
+          core.info(`Upload: ${objectName} to ${filePath} aclType:${aclType}`);
           await client.put(objectName, filePath);
           if (aclType != null) {
             // 管理文件访问权限
             await client.putACL(objectName, aclType);
           }
+          core.info(`Complete: ${objectName}`);
         } catch (e) {
           //
+          core.info(`Error: ${e.code}`);
         }
       }
     }
+    core.info(`All Complete !`);
   } catch (error) {
     core.setFailed(error.message);
   }

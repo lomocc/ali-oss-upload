@@ -70602,35 +70602,38 @@ function upload() {
             });
             const files = glob_1.default.sync(pattern, { cwd: fromDir });
             for (const file of files) {
+                const objectName = slash_1.default(path_1.default.join(toDir, file));
                 let shouldUpload = true;
                 if (!overwrite) {
                     try {
-                        const result = yield client.get(file);
+                        const result = yield client.get(objectName);
                         if (result.res.status !== 200) {
                             shouldUpload = false;
                         }
                     }
                     catch (error) {
-                        //
+                        core.info(`NoSuchKey: ${objectName}`);
                     }
                 }
                 if (shouldUpload) {
                     try {
                         //object-name可以自定义为文件名（例如file.txt）或目录（例如abc/test/file.txt）的形式，实现将文件上传至当前Bucket或Bucket下的指定目录。
-                        const objectName = slash_1.default(path_1.default.join(toDir, file));
                         const filePath = path_1.default.join(fromDir, file);
-                        core.debug(`Upload: ${objectName} to ${filePath}`);
+                        core.info(`Upload: ${objectName} to ${filePath} aclType:${aclType}`);
                         yield client.put(objectName, filePath);
                         if (aclType != null) {
                             // 管理文件访问权限
                             yield client.putACL(objectName, aclType);
                         }
+                        core.info(`Complete: ${objectName}`);
                     }
                     catch (e) {
                         //
+                        core.info(`Error: ${e.code}`);
                     }
                 }
             }
+            core.info(`All Complete !`);
         }
         catch (error) {
             core.setFailed(error.message);
