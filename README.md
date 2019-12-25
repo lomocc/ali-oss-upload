@@ -16,4 +16,5 @@ Upload files to Aliyun OSS
     pattern: GXWorkSetup*{.exe,.dmg} # dist/GXWorkSetup*{.exe,.dmg}
     fromDir: dist
     toDir: gxwork
+    aclType: public-read # 'default'|'private'|'public-read'|'public-read-write'
 ```
