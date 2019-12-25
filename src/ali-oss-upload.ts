@@ -2,6 +2,7 @@ import * as core from '@actions/core';
 import Client from 'ali-oss';
 import glob from 'glob';
 import path from 'path';
+import slash from 'slash';
 
 export async function upload(): Promise<void> {
   try {
@@ -51,8 +52,10 @@ export async function upload(): Promise<void> {
       if (shouldUpload) {
         try {
           //object-name可以自定义为文件名（例如file.txt）或目录（例如abc/test/file.txt）的形式，实现将文件上传至当前Bucket或Bucket下的指定目录。
-          const objectName = path.join(toDir, file);
-          await client.put(objectName, path.join(fromDir, file));
+          const objectName = slash(path.join(toDir, file));
+          const filePath = path.join(fromDir, file);
+          core.debug(`Upload: ${objectName} to ${filePath}`);
+          await client.put(objectName, filePath);
           if (aclType != null) {
             // 管理文件访问权限
             await client.putACL(objectName, aclType);

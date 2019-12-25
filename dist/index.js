@@ -10230,7 +10230,24 @@ formatters.j = function (v) {
 
 /***/ }),
 /* 142 */,
-/* 143 */,
+/* 143 */
+/***/ (function(module) {
+
+"use strict";
+
+module.exports = path => {
+	const isExtendedLengthPath = /^\\\\\?\\/.test(path);
+	const hasNonAscii = /[^\u0000-\u0080]+/.test(path); // eslint-disable-line no-control-regex
+
+	if (isExtendedLengthPath || hasNonAscii) {
+		return path;
+	}
+
+	return path.replace(/\\/g, '/');
+};
+
+
+/***/ }),
 /* 144 */,
 /* 145 */,
 /* 146 */
@@ -70556,6 +70573,7 @@ const core = __importStar(__webpack_require__(470));
 const ali_oss_1 = __importDefault(__webpack_require__(98));
 const glob_1 = __importDefault(__webpack_require__(120));
 const path_1 = __importDefault(__webpack_require__(622));
+const slash_1 = __importDefault(__webpack_require__(143));
 function upload() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -70599,8 +70617,10 @@ function upload() {
                 if (shouldUpload) {
                     try {
                         //object-name可以自定义为文件名（例如file.txt）或目录（例如abc/test/file.txt）的形式，实现将文件上传至当前Bucket或Bucket下的指定目录。
-                        const objectName = path_1.default.join(toDir, file);
-                        yield client.put(objectName, path_1.default.join(fromDir, file));
+                        const objectName = slash_1.default(path_1.default.join(toDir, file));
+                        const filePath = path_1.default.join(fromDir, file);
+                        core.debug(`Upload: ${objectName} to ${filePath}`);
+                        yield client.put(objectName, filePath);
                         if (aclType != null) {
                             // 管理文件访问权限
                             yield client.putACL(objectName, aclType);
