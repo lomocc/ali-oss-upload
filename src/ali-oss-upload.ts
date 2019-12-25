@@ -33,11 +33,13 @@ export async function upload(): Promise<void> {
       region,
       accessKeyId,
       accessKeySecret,
-      bucket
+      bucket,
+      timeout: 360
     });
 
     const files = glob.sync(pattern, { cwd: fromDir });
     for (const file of files) {
+      core.info('====================================');
       const objectName = slash(path.join(toDir, file));
       let shouldUpload = true;
       if (!overwrite) {
@@ -61,6 +63,7 @@ export async function upload(): Promise<void> {
             await client.putACL(objectName, aclType);
           }
           core.info(`Complete: ${objectName}`);
+          core.info('====================================');
         } catch (e) {
           //
           core.info(`Error: ${e.code}`);

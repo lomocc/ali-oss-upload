@@ -70598,10 +70598,12 @@ function upload() {
                 region,
                 accessKeyId,
                 accessKeySecret,
-                bucket
+                bucket,
+                timeout: 360
             });
             const files = glob_1.default.sync(pattern, { cwd: fromDir });
             for (const file of files) {
+                core.info('====================================');
                 const objectName = slash_1.default(path_1.default.join(toDir, file));
                 let shouldUpload = true;
                 if (!overwrite) {
@@ -70626,6 +70628,7 @@ function upload() {
                             yield client.putACL(objectName, aclType);
                         }
                         core.info(`Complete: ${objectName}`);
+                        core.info('====================================');
                     }
                     catch (e) {
                         //
