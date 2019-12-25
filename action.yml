@@ -1,10 +1,28 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: "Aliyun OSS Upload"
+description: "Upload files to Aliyun OSS"
+author: "Vincent"
 inputs:
-  myInput:              # change this
-    description: 'input description here'
-    default: 'default value if applicable'
+  region:
+    description: "ali-oss region"
+    required: true
+  accessKeyId:
+    description: "ali-oss accessKeyId"
+    required: true
+  accessKeySecret:
+    description: "ali-oss accessKeySecret"
+    required: true
+  bucket:
+    description: "ali-oss bucket"
+    required: true
+  pattern:
+    description: "glob pattern, The path to the asset you want to upload"
+    required: true
+  cwd:
+    description: "glob cwd"
+    required: false
+  overwrite:
+    description: "overwrite exist, default:true"
+    required: false
 runs:
-  using: 'node12'
-  main: 'dist/index.js'
+  using: "node12"
+  main: "dist/index.js"

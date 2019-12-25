@@ -1,9 +1,9 @@
 {
-  "name": "typescript-action",
+  "name": "ali-oss-upload",
   "version": "0.0.0",
   "private": true,
-  "description": "TypeScript template action",
-  "main": "lib/main.js",
+  "description": "Upload files to Aliyun OSS",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
     "format": "prettier --write **/*.ts",
@@ -15,19 +15,24 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/typescript-action.git"
+    "url": "git+https://github.com/lomocc/ali-oss-upload.git"
   },
   "keywords": [
     "actions",
     "node",
-    "setup"
+    "upload",
+    "ali-oss"
   ],
   "author": "YourNameOrOrganization",
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^1.2.0"
+    "@actions/core": "^1.2.0",
+    "@actions/github": "^2.0.0",
+    "ali-oss": "^6.3.1",
+    "glob": "^7.1.6"
   },
   "devDependencies": {
+    "@types/glob": "^7.1.1",
     "@types/jest": "^24.0.23",
     "@types/node": "^12.7.12",
     "@typescript-eslint/parser": "^2.8.0",
