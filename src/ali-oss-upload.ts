@@ -1,5 +1,6 @@
 import * as core from '@actions/core';
 import Client from 'ali-oss';
+import fs from 'fs';
 import glob from 'glob';
 import path from 'path';
 import slash from 'slash';
@@ -34,7 +35,7 @@ export async function upload(): Promise<void> {
       accessKeyId,
       accessKeySecret,
       bucket,
-      timeout: 360000
+      timeout: 3600000
     });
 
     const files = glob.sync(pattern, { cwd: fromDir });
@@ -57,7 +58,10 @@ export async function upload(): Promise<void> {
           //object-name可以自定义为文件名（例如file.txt）或目录（例如abc/test/file.txt）的形式，实现将文件上传至当前Bucket或Bucket下的指定目录。
           const filePath = path.join(fromDir, file);
           core.info(`Upload: ${objectName} to ${filePath} aclType:${aclType}`);
-          await client.put(objectName, filePath);
+          // await client.put(objectName, filePath);
+          const stream = fs.createReadStream(filePath);
+          const contentLength = fs.statSync(filePath).size;
+          await client.putStream(objectName, stream, { contentLength });
           if (aclType != null) {
             // 管理文件访问权限
             await client.putACL(objectName, aclType);

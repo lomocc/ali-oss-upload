@@ -70571,6 +70571,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(470));
 const ali_oss_1 = __importDefault(__webpack_require__(98));
+const fs_1 = __importDefault(__webpack_require__(747));
 const glob_1 = __importDefault(__webpack_require__(120));
 const path_1 = __importDefault(__webpack_require__(622));
 const slash_1 = __importDefault(__webpack_require__(143));
@@ -70599,7 +70600,7 @@ function upload() {
                 accessKeyId,
                 accessKeySecret,
                 bucket,
-                timeout: 360000
+                timeout: 3600000
             });
             const files = glob_1.default.sync(pattern, { cwd: fromDir });
             for (const file of files) {
@@ -70622,7 +70623,10 @@ function upload() {
                         //object-name可以自定义为文件名（例如file.txt）或目录（例如abc/test/file.txt）的形式，实现将文件上传至当前Bucket或Bucket下的指定目录。
                         const filePath = path_1.default.join(fromDir, file);
                         core.info(`Upload: ${objectName} to ${filePath} aclType:${aclType}`);
-                        yield client.put(objectName, filePath);
+                        // await client.put(objectName, filePath);
+                        const stream = fs_1.default.createReadStream(filePath);
+                        const contentLength = fs_1.default.statSync(filePath).size;
+                        yield client.putStream(objectName, stream, { contentLength });
                         if (aclType != null) {
                             // 管理文件访问权限
                             yield client.putACL(objectName, aclType);
