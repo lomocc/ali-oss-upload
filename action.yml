@@ -17,13 +17,13 @@ inputs:
   pattern:
     description: "glob pattern, The path to the asset you want to upload"
     required: true
-  cwd:
+  fromDir:
     description: "glob cwd"
     required: false
   overwrite:
     description: "overwrite exist, default:true"
     required: false
-  ossBaseDir:
+  toDir:
     description: "oss baseDir, default: ''"
     required: false
 runs:

@@ -14,6 +14,6 @@ Upload files to Aliyun OSS
     BUCKET: ${{ secrets.BUCKET }} # ali-oss options bucket
   with:
     pattern: GXWorkSetup*{.exe,.dmg} # dist/GXWorkSetup*{.exe,.dmg}
-    cwd: dist
-    ossBaseDir: gxwork
+    fromDir: dist
+    toDir: gxwork
 ```
