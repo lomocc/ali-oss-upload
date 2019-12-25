@@ -4,16 +4,16 @@ author: "Vincent"
 inputs:
   region:
     description: "ali-oss region"
-    required: true
+    required: false
   accessKeyId:
     description: "ali-oss accessKeyId"
-    required: true
+    required: false
   accessKeySecret:
     description: "ali-oss accessKeySecret"
-    required: true
+    required: false
   bucket:
     description: "ali-oss bucket"
-    required: true
+    required: false
   pattern:
     description: "glob pattern, The path to the asset you want to upload"
     required: true
@@ -22,6 +22,9 @@ inputs:
     required: false
   overwrite:
     description: "overwrite exist, default:true"
+    required: false
+  ossBaseDir:
+    description: "oss baseDir, default: ''"
     required: false
 runs:
   using: "node12"

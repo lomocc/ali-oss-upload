@@ -25,6 +25,7 @@ export async function upload(): Promise<void> {
     const overwrite =
       core.getInput('overwrite', { required: false }) !== 'false';
     const cwd = core.getInput('cwd', { required: false }) || '.';
+    const ossBaseDir = core.getInput('ossBaseDir', { required: false }) || '';
 
     const client = new Client({
       region,
@@ -49,7 +50,7 @@ export async function upload(): Promise<void> {
       if (shouldUpload) {
         try {
           //object-name可以自定义为文件名（例如file.txt）或目录（例如abc/test/file.txt）的形式，实现将文件上传至当前Bucket或Bucket下的指定目录。
-          await client.put(file, path.join(cwd, file));
+          await client.put(path.join(ossBaseDir, file), path.join(cwd, file));
         } catch (e) {
           //
         }

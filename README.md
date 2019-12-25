@@ -15,4 +15,5 @@ Upload files to Aliyun OSS
   with:
     pattern: GXWorkSetup*{.exe,.dmg} # dist/GXWorkSetup*{.exe,.dmg}
     cwd: dist
+    ossBaseDir: gxwork
 ```
