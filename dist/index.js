@@ -70599,7 +70599,7 @@ function upload() {
                 accessKeyId,
                 accessKeySecret,
                 bucket,
-                timeout: 360
+                timeout: 360000
             });
             const files = glob_1.default.sync(pattern, { cwd: fromDir });
             for (const file of files) {

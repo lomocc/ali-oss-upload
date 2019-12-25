@@ -34,7 +34,7 @@ export async function upload(): Promise<void> {
       accessKeyId,
       accessKeySecret,
       bucket,
-      timeout: 360
+      timeout: 360000
     });
 
     const files = glob.sync(pattern, { cwd: fromDir });
