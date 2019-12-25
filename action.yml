@@ -26,6 +26,9 @@ inputs:
   toDir:
     description: "oss baseDir, default: ''"
     required: false
+  aclType:
+    description: "oss aclType, 'default'|'private'|'public-read'|'public-read-write'"
+    required: false
 runs:
   using: "node12"
   main: "dist/index.js"
