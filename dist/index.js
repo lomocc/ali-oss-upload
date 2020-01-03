@@ -70571,7 +70571,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(470));
 const ali_oss_1 = __importDefault(__webpack_require__(98));
-const fs_1 = __importDefault(__webpack_require__(747));
 const glob_1 = __importDefault(__webpack_require__(120));
 const path_1 = __importDefault(__webpack_require__(622));
 const slash_1 = __importDefault(__webpack_require__(143));
@@ -70603,9 +70602,14 @@ function upload() {
                 timeout: 3600000
             });
             const files = glob_1.default.sync(pattern, { cwd: fromDir });
+            core.info('====================================');
+            core.info('[Files]');
+            core.info(files.join('\n'));
+            core.info('====================================');
             for (const file of files) {
-                core.info('====================================');
                 const objectName = slash_1.default(path_1.default.join(toDir, file));
+                core.info(`[${objectName}]`);
+                core.info('====================================');
                 let shouldUpload = true;
                 if (!overwrite) {
                     try {
@@ -70622,16 +70626,17 @@ function upload() {
                     try {
                         //object-name可以自定义为文件名（例如file.txt）或目录（例如abc/test/file.txt）的形式，实现将文件上传至当前Bucket或Bucket下的指定目录。
                         const filePath = path_1.default.join(fromDir, file);
-                        core.info(`Upload: ${objectName} to ${filePath} aclType:${aclType}`);
-                        // await client.put(objectName, filePath);
-                        const stream = fs_1.default.createReadStream(filePath);
-                        const contentLength = fs_1.default.statSync(filePath).size;
-                        yield client.putStream(objectName, stream, { contentLength });
+                        core.info(`[${objectName}] Upload: ${filePath} ${aclType}`);
+                        yield client.multipartUpload(objectName, filePath, {
+                            progress: percentage => {
+                                core.info(`[${objectName}] Progress: ${percentage}`);
+                            }
+                        });
                         if (aclType != null) {
                             // 管理文件访问权限
                             yield client.putACL(objectName, aclType);
                         }
-                        core.info(`Complete: ${objectName}`);
+                        core.info(`[${objectName}] Complete`);
                         core.info('====================================');
                     }
                     catch (e) {

@@ -1,6 +1,5 @@
 import * as core from '@actions/core';
 import Client from 'ali-oss';
-import fs from 'fs';
 import glob from 'glob';
 import path from 'path';
 import slash from 'slash';
@@ -39,9 +38,14 @@ export async function upload(): Promise<void> {
     });
 
     const files = glob.sync(pattern, { cwd: fromDir });
+    core.info('====================================');
+    core.info('[Files]');
+    core.info(files.join('\n'));
+    core.info('====================================');
     for (const file of files) {
-      core.info('====================================');
       const objectName = slash(path.join(toDir, file));
+      core.info(`[${objectName}]`);
+      core.info('====================================');
       let shouldUpload = true;
       if (!overwrite) {
         try {
@@ -57,16 +61,18 @@ export async function upload(): Promise<void> {
         try {
           //object-name可以自定义为文件名（例如file.txt）或目录（例如abc/test/file.txt）的形式，实现将文件上传至当前Bucket或Bucket下的指定目录。
           const filePath = path.join(fromDir, file);
-          core.info(`Upload: ${objectName} to ${filePath} aclType:${aclType}`);
-          // await client.put(objectName, filePath);
-          const stream = fs.createReadStream(filePath);
-          const contentLength = fs.statSync(filePath).size;
-          await client.putStream(objectName, stream, { contentLength });
+          core.info(`[${objectName}] Upload: ${filePath} ${aclType}`);
+          await client.multipartUpload(objectName, filePath, {
+            progress: percentage => {
+              core.info(`[${objectName}] Progress: ${percentage}`);
+            }
+          });
+
           if (aclType != null) {
             // 管理文件访问权限
             await client.putACL(objectName, aclType);
           }
-          core.info(`Complete: ${objectName}`);
+          core.info(`[${objectName}] Complete`);
           core.info('====================================');
         } catch (e) {
           //
