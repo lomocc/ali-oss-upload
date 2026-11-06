@@ -1,0 +1,34 @@
+name: "Aliyun OSS Upload"
+description: "Upload files to Aliyun OSS"
+author: "Vincent"
+inputs:
+  region:
+    description: "ali-oss region"
+    required: false
+  accessKeyId:
+    description: "ali-oss accessKeyId"
+    required: false
+  accessKeySecret:
+    description: "ali-oss accessKeySecret"
+    required: false
+  bucket:
+    description: "ali-oss bucket"
+    required: false
+  pattern:
+    description: "glob pattern, The path to the asset you want to upload"
+    required: true
+  fromDir:
+    description: "glob cwd"
+    required: false
+  overwrite:
+    description: "overwrite exist, default:true"
+    required: false
+  toDir:
+    description: "oss baseDir, default: ''"
+    required: false
+  aclType:
+    description: "oss aclType, 'default'|'private'|'public-read'|'public-read-write'"
+    required: false
+runs:
+  using: "node12"
+  main: "dist/index.js"
